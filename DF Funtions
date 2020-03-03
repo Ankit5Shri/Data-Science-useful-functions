@@ -37,3 +37,11 @@ X = telecom.drop(['Churn','customerID'],axis=1)
 y = telecom['Churn']
 
 X_train, X_test, y_train, y_test = train_test_split(X,y, train_size=0.7,test_size=0.3,random_state=100)
+
+---------------------------Running Your First Training Model----------------------------------
+import statsmodels.api as sm
+
+# Logistic regression model
+logm1 = sm.GLM(y_train,(sm.add_constant(X_train)), family = sm.families.Binomial())
+logm1.fit().summary()
+
