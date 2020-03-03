@@ -1,3 +1,39 @@
-# Converting Yes to 1 and No to 0 
-#Binary 
+----------#Converting Yes to 1 and No to 0 -> Binary-------------------- 
 telecom['PhoneService'] = telecom['PhoneService'].map({'Yes': 1, 'No': 0})
+
+------------#Creating a dummy variable for the variable 'Contract' and dropping the first one------------------
+cont = pd.get_dummies(telecom['Contract'],prefix='Contract',drop_first=True)
+#Adding the results to the master dataframe
+telecom = pd.concat([telecom,cont],axis=1)
+
+----------------------#Convert into numeric type---------------------------
+telecom['TotalCharges'] = pd.to_numeric(telecom['TotalCharges'],errors='coerce')
+#telecom['tenure'] = telecom['tenure'].astype(int).astype(float)
+
+------------------#Remove few rows-------------------------------------
+telecom = telecom[~np.isnan(telecom['TotalCharges'])]
+
+----------------#Checking outliers at 25%,50%,75%,90%,95% and 99%-----------------------------
+num_telecom.describe(percentiles=[.25,.5,.75,.90,.95,.99])
+
+-----------#Feature Standardisation-------------------
+normalized_df=(df-df.mean())/df.std()
+telecom = pd.concat([telecom,normalized_df],axis=1)
+
+--------------------------Generalized Linear Model (GLM)------------
+Generalized Linear Models (GLM) estimate regression models for outcomes following exponential distributions.
+These include Poisson, binomial, and gamma distributions. 
+Each serves a different purpose, and depending on distribution and link function choice,
+can be used either for prediction or classification.
+
+------------#Splitting Data into Training and Test Sets................................
+
+from sklearn.model_selection import train_test_split
+
+# Putting feature variable to X
+X = telecom.drop(['Churn','customerID'],axis=1)
+
+# Putting response variable to y
+y = telecom['Churn']
+
+X_train, X_test, y_train, y_test = train_test_split(X,y, train_size=0.7,test_size=0.3,random_state=100)
